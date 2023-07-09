@@ -1,0 +1,42 @@
+name: Run Selenium On GitHub Action
+on:
+  [push]
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out repo
+        uses: actions/checkout@v3
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Installing package list
+        run: apt list --installed
+
+      - name: Removing previous chrome instances on runner
+        run: sudo apt-get install -y chromium-browser
+
+      - name: Install venv
+        run: sudo apt install virtualenv
+
+      - name: Create venv folder
+        run: mkdir envs/
+
+      - name: Go to env folder
+        run: cd envs/
+
+      - name: Set venv    
+        run: virtualenv selenium_venv
+
+      - name: Activate venv
+        run: source selenium_venv/bin/activate
+
+      - name: Installing all necessary packages
+        run: pip install webdriver-manager selenium
+
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+
+      - name: Running the Python script
+        run: python solution.py
